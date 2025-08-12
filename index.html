@@ -1,55 +1,66 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
 <meta charset="UTF-8" />
 <title>Área Restrita</title>
 <style>
   /* Centraliza tudo na tela */
-  body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;   /* vertical */
-    align-items: center;       /* horizontal */
-    height: 100vh;
-    margin: 0;
-  }
+html, body { height: 100%; }
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;      /* vertical */
+  align-items: center;          /* horizontal */
+  min-height: 100dvh;           /* melhor que 100vh em mobile */
+  margin: 0;
+  padding: 24px;                /* respiro nas bordas */
+}
 
-  h2, h3 { margin: 0 0 12px 0; }
+/* Títulos */
+h2, h3 { margin: 0 0 14px 0; text-align: center; }
 
-  input, button {
-    display: block;
-    margin: 10px 0;
-    padding: 10px;
-    width: 100%;
-    max-width: 280px;
-    box-sizing: border-box;
-  }
+/* Campos e botões – tamanhos confortáveis no toque */
+input, button {
+  display: block;
+  margin: 10px 0;
+  padding: 12px;
+  width: 100%;
+  max-width: 420px;             /* mais largo no celular */
+  font-size: 16px;              /* evita zoom do iOS */
+  box-sizing: border-box;
+}
 
-  /* Containers */
-  #menu, #loading {
-    width: 100%;
-    max-width: 280px;
-  }
-  #menu { display: none; }          /* escondido até carregar */
-  #loading { display: none; }       /* aparece só durante o carregamento */
+/* Containers */
+#menu, #loading {
+  width: 100%;
+  max-width: 420px;             /* acompanha inputs/botões */
+}
+#menu { display: none; }
+#loading { display: none; }
 
-  /* “Sair” como link pequeno */
-  #linkSair {
-    cursor: pointer;
-    color: #007bff;
-    text-align: center;
-    font-size: 14px;
-    margin-top: 16px;
-    user-select: none;
-  }
-  #linkSair:hover { text-decoration: underline; }
+/* “Sair” como link pequeno */
+#linkSair {
+  cursor: pointer;
+  color: #007bff;
+  text-align: center;
+  font-size: 14px;
+  margin-top: 16px;
+  user-select: none;
+}
+#linkSair:hover { text-decoration: underline; }
 
-  /* Centraliza o texto de loading */
-  #loading p {
-    text-align: center;
-    margin: 0;
-  }
+/* Centraliza o texto de loading */
+#loading p { text-align: center; margin: 0; }
+
+/* Em telas maiores, dá uma afinada para não ficar gigante */
+@media (min-width: 768px) {
+  input, button, #menu, #loading { max-width: 480px; }
+}
+
 </style>
 </head>
 <body>
