@@ -546,30 +546,25 @@ setTimeout(() => {
 
 <!-- script para autenticar o login -->
 <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbye8ZvyXrk86SpfuYxXXM9U3vdS8FC4tIb-SDdMf53DvLwC7T2t2YM0SkRffiE2Q-BYfw/exec";
-    const PAGINA  = "expo_market";
+const API_URL = "https://script.google.com/macros/s/AKfycby9W9w8NwLNpyX2XSegURIX5Z2qkJAyYskXePVggOwG6wJhquDFoY7jR91p_YmOyoDmVA/exec";
+const PAGINA  = "expo_market"; // nome da coluna
 
-    (async function(){
-      const email = (localStorage.getItem("email") || "").toLowerCase();
-      if (!email) {
-        alert("Faça login primeiro.");
-        window.location.href = "index.html";
-        return;
-      }
-      const resp = await fetch(
-        `${API_URL}?email=${encodeURIComponent(email)}&pagina=${encodeURIComponent(PAGINA)}`
-      );
-      const data = await resp.json();
-      if (!data.permitido) {
-        alert("Você não tem permissão para acessar esta página.");
-        window.location.href = "index.html";
-      } else {
-        // opcional: preencher campo de email automaticamente
-        const campoEmail = document.getElementById("email");
-        if (campoEmail) campoEmail.value = email;
-      }
-    })();
-  </script>
+(async function(){
+  const chave = (localStorage.getItem("chave") || "").trim();
+  if (!chave) {
+    alert("Faça login primeiro.");
+    window.location.href = "index.html";
+    return;
+  }
+  const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}&pagina=${encodeURIComponent(PAGINA)}`);
+  const data = await resp.json();
+  if (!data.permitido) {
+    alert("Você não tem permissão para acessar esta página.");
+    window.location.href = "index.html";
+  }
+})();
+</script>
+
 
 
 

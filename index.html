@@ -1,83 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Área Restrita</title>
+  <style>
+    /* Centralizado e responsivo */
+    html, body { height: 100%; }
+    body {
+      font-family: Arial, sans-serif;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      min-height: 100dvh; margin: 0; padding: 24px;
+    }
+    h2, h3 { margin: 0 0 14px 0; text-align: center; }
 
-<meta charset="UTF-8" />
-<title>Área Restrita</title>
-<style>
-  /* Centraliza tudo na tela */
-html, body { height: 100%; }
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;      /* vertical */
-  align-items: center;          /* horizontal */
-  min-height: 100dvh;           /* melhor que 100vh em mobile */
-  margin: 0;
-  padding: 24px;                /* respiro nas bordas */
-}
+    /* Campo e botões */
+    input, button {
+      display: block; margin: 10px 0; padding: 12px;
+      width: 100%; max-width: 420px; font-size: 16px; box-sizing: border-box;
+    }
 
-/* Títulos */
-h2, h3 { margin: 0 0 14px 0; text-align: center; }
+    /* Containers */
+    #menu, #loading { width: 100%; max-width: 420px; }
+    #menu { display: none; }
+    #loading { display: none; }
+    #loading p { text-align: center; margin: 0; }
 
-/* Campos e botões – tamanhos confortáveis no toque */
-input, button {
-  display: block;
-  margin: 10px 0;
-  padding: 12px;
-  width: 100%;
-  max-width: 420px;             /* mais largo no celular */
-  font-size: 16px;              /* evita zoom do iOS */
-  box-sizing: border-box;
-}
+    /* “Sair” link */
+    #linkSair {
+      cursor: pointer; color: #007bff; text-align: center;
+      font-size: 14px; margin-top: 16px; user-select: none;
+    }
+    #linkSair:hover { text-decoration: underline; }
 
-/* Containers */
-#menu, #loading {
-  width: 100%;
-  max-width: 420px;             /* acompanha inputs/botões */
-}
-#menu { display: none; }
-#loading { display: none; }
-
-/* “Sair” como link pequeno */
-#linkSair {
-  cursor: pointer;
-  color: #007bff;
-  text-align: center;
-  font-size: 14px;
-  margin-top: 16px;
-  user-select: none;
-}
-#linkSair:hover { text-decoration: underline; }
-
-/* Centraliza o texto de loading */
-#loading p { text-align: center; margin: 0; }
-
-/* Em telas maiores, dá uma afinada para não ficar gigante */
-@media (min-width: 768px) {
-  input, button, #menu, #loading { max-width: 480px; }
-}
-
-</style>
+    @media (min-width: 768px) {
+      input, button, #menu, #loading { max-width: 480px; }
+    }
+  </style>
 </head>
 <body>
 
   <h2 id="tituloLogin">Login</h2>
 
   <div id="login-area">
-    <input type="email" id="email" placeholder="Digite seu e-mail" />
+    <input type="text" id="chave" placeholder="Digite sua chave de acesso" />
     <button id="btnEntrar" onclick="login()">Entrar</button>
   </div>
 
-  <!-- BLOCO DE LOADING (único visível durante a busca) -->
-  <div id="loading">
-    <p>Carregando páginas…</p>
-  </div>
+  <!-- Loading -->
+  <div id="loading"><p>Carregando páginas…</p></div>
 
-  <!-- MENU SÓ APARECE DEPOIS QUE AS PÁGINAS FOREM CARREGADAS -->
+  <!-- Menu -->
   <div id="menu">
     <h3>Páginas disponíveis</h3>
     <div id="botoes"></div>
@@ -85,7 +59,7 @@ input, button {
   </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbye8ZvyXrk86SpfuYxXXM9U3vdS8FC4tIb-SDdMf53DvLwC7T2t2YM0SkRffiE2Q-BYfw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby9W9w8NwLNpyX2XSegURIX5Z2qkJAyYskXePVggOwG6wJhquDFoY7jR91p_YmOyoDmVA/exec";
 
 const paginas = [
   {nome: "area_artistas",        label: "Área dos Artistas"},
@@ -109,70 +83,66 @@ function setLoading(state) {
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const isBack = params.get("back") === "1";
+  const chave = (localStorage.getItem("chave") || "").trim();
 
-  const email = (localStorage.getItem("email") || "").toLowerCase().trim();
-
-  if (isBack && email) {
-    // Veio de uma página interna: mantém email e carrega menu direto
+  if (isBack && chave) {
     document.getElementById("tituloLogin").style.display = "none";
     document.getElementById("login-area").style.display = "none";
     carregarMenu();
   } else {
-    // Fluxo normal: força novo login num acesso "frio"
-    localStorage.removeItem("email");
+    // acesso "frio" — exige login
+    localStorage.removeItem("chave");
     document.getElementById("menu").style.display = "none";
     document.getElementById("botoes").innerHTML = "";
-    // Enter no campo de e-mail dispara login
-    document.getElementById("email").addEventListener("keydown", (e) => {
+    document.getElementById("chave").addEventListener("keydown", (e) => {
       if (e.key === "Enter") login();
     });
   }
 });
 
-
 function login() {
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  if (!email) return alert("Digite um e-mail.");
-  localStorage.setItem("email", email);
+  const chave = document.getElementById("chave").value.trim();
+  if (!chave) return alert("Digite sua chave.");
+  localStorage.setItem("chave", chave);
   carregarMenu();
 }
 
 function logout() {
-  localStorage.removeItem("email");
+  localStorage.removeItem("chave");
   setLoading(false);
   document.getElementById("menu").style.display = "none";
   document.getElementById("botoes").innerHTML = "";
-  document.getElementById("email").value = "";
+  document.getElementById("chave").value = "";
   document.getElementById("tituloLogin").style.display = "block";
   document.getElementById("login-area").style.display = "block";
-  // remove o parâmetro back da URL
+  // remove ?back=1 da URL se existir
   if (window.location.search.includes("back=1")) {
     window.history.replaceState({}, "", "index.html");
   }
 }
 
-
 async function carregarMenu() {
   if (isLoading) return;
-  const email = localStorage.getItem("email");
-  if (!email) return;
+  const chave = localStorage.getItem("chave");
+  if (!chave) return;
 
   setLoading(true);
 
-  const titulo = document.getElementById("tituloLogin");
-  const loginArea = document.getElementById("login-area");
-  const menu = document.getElementById("menu");
-  const area = document.getElementById("botoes");
+  const titulo  = document.getElementById("tituloLogin");
+  const loginAr = document.getElementById("login-area");
+  const menu    = document.getElementById("menu");
+  const area    = document.getElementById("botoes");
   const loading = document.getElementById("loading");
 
-  // Durante o carregamento, mostra só o bloco de loading
+  // só loading na tela
   titulo.style.display = "none";
-  loginArea.style.display = "none";
+  loginAr.style.display = "none";
   menu.style.display = "none";
   loading.style.display = "block";
 
   try {
-    const resp = await fetch(`${API_URL}?email=${encodeURIComponent(email)}`);
+    // UMA chamada: retorna todas as permissões da chave
+    const resp = await fetch(`${API_URL}?chave=${encodeURIComponent(chave)}`);
     const data = await resp.json();
     const perms = data.permissoes || {};
 
@@ -191,11 +161,9 @@ async function carregarMenu() {
       }
     });
 
-    // Terminou: esconde loading
     loading.style.display = "none";
-
     if (algumPermitido) {
-      menu.style.display = "block";   // agora sim mostra o menu e o “Sair”
+      menu.style.display = "block";
     } else {
       alert("Acesso inválido.");
       logout();
