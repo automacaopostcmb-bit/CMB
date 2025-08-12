@@ -6,62 +6,106 @@
   <title>Gerador de Post</title>
   <link href="https://fonts.googleapis.com/css2?family=Comic+Relief&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Roboto', sans-serif;
-    }
-    body {
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    label.title-label {
-      font-weight: bold;
-      font-size: 16px;
-      margin-top: 15px;
-    }
-    .hint {
-      font-size: 13px;
-      color: #444;
-      margin-bottom: 10px;
-    }
-    input, textarea, button {
-      width: 100%;
-      max-width: 500px;
-      margin-bottom: 10px;
-      padding: 10px;
-      font-size: 14px;
-    }
-    canvas {
-      margin: 20px 0;
-      width: 100%;
-      max-width: 500px;
-      height: auto;
-      border: 1px solid #ccc;
-    }
-    .slider-label {
-      font-weight: bold;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-    input[type="range"] {
-      width: 100%;
-    }
+  /* Base responsiva */
+  html, body { height: 100%; }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 24px;                 /* respiro nas bordas */
+    min-height: 100dvh;            /* altura correta no mobile */
+    display: block;                /* conteúdo longo rola normal */
+    background-color: #e6f0ff;
+  }
 
-    
+  /* Tipografia */
+  h2, h3 { margin: 0 0 14px 0; text-align: center; }
+
+  /* Campos e botões – confortáveis no toque */
+  input, textarea, button {
+    width: 100%;
+    max-width: 420px;              /* igual ao index */
+    margin: 10px auto;             /* centraliza */
+    padding: 12px;
+    font-size: 16px;               /* evita zoom no iOS */
+    box-sizing: border-box;
+    display: block;
+  }
+
+  /* Canvas e sliders */
+  canvas {
+    margin: 20px auto;
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border: 1px solid #ccc;
+    display: block;
+  }
+
+
+
+
+input[type="range"] {
+  width: 100%;
+  max-width: 500px;
+  margin: 6px auto 12px; 
+  display: block; /* Garante que o slider fique centralizado */
+}
+
+  /* Faixas de seção */
   .faixa-secao {
     width: 100%;
     background-color: #00BFFF;
     padding: 12px 0;
     text-align: center;
+    margin: 16px 0;
   }
+  .faixa-secao span { color: #fff; font-size: 22px; font-weight: bold; }
 
-  .faixa-secao span {
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
+
+  /* título */
+  .title-label {
+  font-weight: bold;
+  font-size: 16px;
+  display: block;      /* garante que ocupe a linha toda */
+  margin-top: 15px;
+  margin-bottom: 6px;
+  color: #333;
+  text-align: center;  /* centraliza o texto */
+}
+
+.hint {
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 10px;
+  text-align: center; /* Centraliza horizontalmente */
+}
+
+
+  /* Link “Voltar” pequeno e discreto */
+  .link-voltar {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    margin: 8px auto 16px;
+    text-align: left;
+    color: #007bff;
+    font-size: 14px;
+    text-decoration: none;
+  }
+  .link-voltar:hover { text-decoration: underline; }
+
+#mensagem {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+
+  /* Larguras maiores no desktop */
+  @media (min-width: 768px) {
+    input, textarea, button, .link-voltar { max-width: 520px; }
+    canvas { max-width: 640px; }
   }
 
 
@@ -74,11 +118,12 @@
 
 
 
-  </style>
+
+  
 </head>
 <body style="background-color: #e6f0ff;">
 
-<a href="index.html?back=1">← Voltar</a>
+<a class="link-voltar" href="index.html?back=1">Voltar</a>
 
 <div class="faixa-secao">
   <span>Sobre você:</span>
@@ -133,13 +178,13 @@
   <span>Vamos criar a sua divulgação!</span>
 </div>
 
-  <label class="slider-label">Tamanho da imagem de apoio</label>
+  <label class="title-label">Tamanho da imagem de apoio</label>
   <input type="range" id="imgScale" min="0.1" max="2" step="0.01" value="1" />
 
-  <label class="slider-label">Mover horizontalmente</label>
+  <label class="title-label">Mover horizontalmente</label>
   <input type="range" id="imgX" min="-500" max="500" value="0" />
 
-  <label class="slider-label">Mover verticalmente</label>
+  <label class="title-label">Mover verticalmente</label>
   <input type="range" id="imgY" min="-500" max="500" value="0" />
 
   <canvas id="canvas" width="1080" height="1350"></canvas>
@@ -186,7 +231,7 @@
 
 <div id="mensagem" style="margin-top: 10px; font-weight: bold;"></div>
 
-
+<br><br>
 
 
 
@@ -502,7 +547,7 @@ setTimeout(() => {
 <!-- script para autenticar o login -->
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbye8ZvyXrk86SpfuYxXXM9U3vdS8FC4tIb-SDdMf53DvLwC7T2t2YM0SkRffiE2Q-BYfw/exec";
-    const PAGINA  = "area_artistas";
+    const PAGINA  = "expo_market";
 
     (async function(){
       const email = (localStorage.getItem("email") || "").toLowerCase();
